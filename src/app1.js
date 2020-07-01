@@ -1,12 +1,17 @@
 import $ from "jquery";
 import './app1.css'
 //数据相关M
+const eventBus = $({})
 const m = {
     data: {
-        n: parseInt(localStorage.getItem("n"))
+        n: parseInt((JSON.parse(localStorage.getItem("m.data"))|| {n:100})['n'])
     },
-    update() {
-        localStorage.setItem("n", m.data.n);
+    update(data) {
+        Object.assign(m.data,data)
+        localStorage.setItem("m.data", JSON.stringify(m.data));
+
+        eventBus.trigger('m:updated')
+        // localStorage.setItem("n", m.data.n);
     }
 }
 //视图相关V
@@ -37,14 +42,17 @@ const c = {
     init(container) {
         v.init(container)
         v.render(m.data.n)
-        c.ui = {
-            button1: $("#add1"),
-            button2: $("#subtract1"),
-            button3: $("#multiply2"),
-            button4: $("#divide2"),
-            number: $("#number")
-        }
+        // c.ui = {
+        //     button1: $("#add1"),
+        //     button2: $("#subtract1"),
+        //     button3: $("#multiply2"),
+        //     button4: $("#divide2"),
+        //     number: $("#number")
+        // }
         c.autoBindEvents()
+        eventBus.on('m:updated',()=>{
+            v.render(m.data.n)
+        })
     },
     events: {
         'click #add1': 'add',
@@ -53,28 +61,26 @@ const c = {
         'click #divide2': 'divide',
     },
     add() {
-        m.data.n++;
+        m.update({n:m.data.n+1})
     },
     subtract() {
-        m.data.n--;
+        m.update({n:m.data.n-1})
     },
     multiply() {
-        m.data.n *= 2
+        m.update({n:m.data.n*2})
     },
     divide() {
-        m.data.n /= 2
+        m.update({n:m.data.n/2})
+
     },
     autoBindEvents() {
         for (let key in c.events) {
-            console.log(key.split(' ')[0]);
-            console.log(key.split(' ')[1]);
-            console.log(c.events[key]);
             const event = key.split(' ')[0]
             const element = key.split(' ')[1]
             v.container.on(event,element,()=>{
                 c[c.events[key]]();
-                m.update()
-                v.render(m.data.n)
+                // m.update()
+                // v.render(m.data.n)
             })
         }
     }
