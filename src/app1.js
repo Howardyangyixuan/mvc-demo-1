@@ -11,10 +11,9 @@ const m = {
 }
 //视图相关V
 const v = {
-    container:null,
+    container: null,
     init(container) {
         v.container = $(container)
-        v.render()
     },
     html: `
         <div class="output">
@@ -25,9 +24,9 @@ const v = {
           <button id="divide2">➗2</button>
         </div>
     `,
-    render() {
-        if (v.container.children.length!==0)v.container.empty()
-        $(v.html.replace('{{n}}', m.data.n)).prependTo(v.container)
+    render(n) {
+        if (v.container.children.length !== 0) v.container.empty()
+        $(v.html.replace('{{n}}', n)).prependTo(v.container)
 
     }
 }
@@ -37,6 +36,7 @@ const v = {
 const c = {
     init(container) {
         v.init(container)
+        v.render(m.data.n)
         c.ui = {
             button1: $("#add1"),
             button2: $("#subtract1"),
@@ -44,30 +44,39 @@ const c = {
             button4: $("#divide2"),
             number: $("#number")
         }
-        c.bindEvents()
+        c.autoBindEvents()
     },
-    bindEvents() {
-        console.log(v.container)
-        v.container.on('click', '#add1', () => {
-            m.data.n++
-            m.update()
-            v.render()
-        })
-        v.container.on('click', '#subtract1', () => {
-            m.data.n--
-            m.update()
-            v.render()
-        })
-        v.container.on('click', '#multiply2', () => {
-            m.data.n *= 2
-            m.update()
-            v.render()
-        })
-        v.container.on('click', '#divide2', () => {
-            m.data.n /= 2
-            m.update()
-            v.render()
-        })
+    events: {
+        'click #add1': 'add',
+        'click #subtract1': 'subtract',
+        'click #multiply2': 'multiply',
+        'click #divide2': 'divide',
+    },
+    add() {
+        m.data.n++;
+    },
+    subtract() {
+        m.data.n--;
+    },
+    multiply() {
+        m.data.n *= 2
+    },
+    divide() {
+        m.data.n /= 2
+    },
+    autoBindEvents() {
+        for (let key in c.events) {
+            console.log(key.split(' ')[0]);
+            console.log(key.split(' ')[1]);
+            console.log(c.events[key]);
+            const event = key.split(' ')[0]
+            const element = key.split(' ')[1]
+            v.container.on(event,element,()=>{
+                c[c.events[key]]();
+                m.update()
+                v.render(m.data.n)
+            })
+        }
     }
 
 }

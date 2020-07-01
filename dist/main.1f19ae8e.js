@@ -11395,18 +11395,18 @@ var v = {
   container: null,
   init: function init(container) {
     v.container = (0, _jquery.default)(container);
-    v.render();
   },
   html: "\n        <div class=\"output\">\n          <span id=\"number\">{{n}}</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n    ",
-  render: function render() {
+  render: function render(n) {
     if (v.container.children.length !== 0) v.container.empty();
-    (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo(v.container);
+    (0, _jquery.default)(v.html.replace('{{n}}', n)).prependTo(v.container);
   }
 }; //其他都C
 
 var c = {
   init: function init(container) {
     v.init(container);
+    v.render(m.data.n);
     c.ui = {
       button1: (0, _jquery.default)("#add1"),
       button2: (0, _jquery.default)("#subtract1"),
@@ -11414,30 +11414,43 @@ var c = {
       button4: (0, _jquery.default)("#divide2"),
       number: (0, _jquery.default)("#number")
     };
-    c.bindEvents();
+    c.autoBindEvents();
   },
-  bindEvents: function bindEvents() {
-    console.log(v.container);
-    v.container.on('click', '#add1', function () {
-      m.data.n++;
-      m.update();
-      v.render();
-    });
-    v.container.on('click', '#subtract1', function () {
-      m.data.n--;
-      m.update();
-      v.render();
-    });
-    v.container.on('click', '#multiply2', function () {
-      m.data.n *= 2;
-      m.update();
-      v.render();
-    });
-    v.container.on('click', '#divide2', function () {
-      m.data.n /= 2;
-      m.update();
-      v.render();
-    });
+  events: {
+    'click #add1': 'add',
+    'click #subtract1': 'subtract',
+    'click #multiply2': 'multiply',
+    'click #divide2': 'divide'
+  },
+  add: function add() {
+    m.data.n++;
+  },
+  subtract: function subtract() {
+    m.data.n--;
+  },
+  multiply: function multiply() {
+    m.data.n *= 2;
+  },
+  divide: function divide() {
+    m.data.n /= 2;
+  },
+  autoBindEvents: function autoBindEvents() {
+    var _loop = function _loop(key) {
+      console.log(key.split(' ')[0]);
+      console.log(key.split(' ')[1]);
+      console.log(c.events[key]);
+      var event = key.split(' ')[0];
+      var element = key.split(' ')[1];
+      v.container.on(event, element, function () {
+        c[c.events[key]]();
+        m.update();
+        v.render(m.data.n);
+      });
+    };
+
+    for (var key in c.events) {
+      _loop(key);
+    }
   }
 }; // c.init('.page')
 
@@ -11488,7 +11501,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65275" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55629" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
