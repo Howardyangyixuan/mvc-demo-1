@@ -1,0 +1,89 @@
+#app2 {
+  border: 1px solid #000;
+}
+
+#app2 .tab-bar {
+  border: 1px solid #000;
+  display: flex;
+}
+
+#app2 .tab-bar > li {
+  border: 1px solid #000;
+  width: 50%;
+}
+#app2 .tab-bar > li.selected {
+  border: 1px solid #000;
+  width: 50%;
+  background: green;
+}
+
+#app2 .tab-content {
+  border: 1px solid #000;
+  display: flex;
+}
+
+#app2 .tab-content > li {
+  display: none;
+  border: 1px solid #000;
+  width: 50%;
+}
+#app2 .tab-content > li.active {
+  display: block;
+  border: 1px solid #000;
+  width: 50%;
+}
+
+#app3 .square {
+  border: 1px solid #000000;
+  margin-top: 10vw;
+  margin-left: 10vw;
+  width: 10vw;
+  height: 10vh;
+  transition: transform 1s;
+
+}
+#app3 .square.active {
+  transform: translateX(15vw);
+}
+
+#app4 .circle {
+  width: 30vw;
+  height: 30vw;
+  border-radius: 50%;
+  border: 1px solid #000;
+}
+
+@keyframes change {
+  0% {
+    background: #000;
+  }
+  100% {
+    background: white;
+  }
+}
+#app4 .circle.active {
+  animation: change 1s infinite alternate linear;
+}
+
+body > .page {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+body > .page > section {
+  width: 50vw;
+  height: 50vh;
+  border: 1px solid #000;
+}
+
+body {
+  /* background: red; */
+}
+#app1 {
+  border: 1px solid #000;
+  width: 50vw;
+  height: 50vh;
+}
+
+
+/*# sourceMappingURL=/main.1f19ae8e.css.map */
