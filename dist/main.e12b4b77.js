@@ -117,9 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"zQT1":[function(require,module,exports) {
-
-},{}],"yK1t":[function(require,module,exports) {
+})({"yK1t":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -11205,14 +11203,22 @@ if ( typeof noGlobal === "undefined" ) {
 return jQuery;
 } );
 
-},{"process":"yK1t"}],"US5u":[function(require,module,exports) {
+},{"process":"yK1t"}],"zQT1":[function(require,module,exports) {
+
+},{}],"US5u":[function(require,module,exports) {
 "use strict";
 
 var _jquery = _interopRequireDefault(require("jquery"));
 
+require("./app1.css");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log(_jquery.default);
+console.log(_jquery.default); //初始化
+
+var html = "\n <section id=\"app1\">\n        <div class=\"output\">\n          <span id=\"number\">100</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n      </section>\n";
+var $element = (0, _jquery.default)(html).prependTo((0, _jquery.default)('.page')); //初始化操作元素和数据
+
 var $button1 = (0, _jquery.default)("#add1");
 console.log($button1);
 var $button2 = (0, _jquery.default)("#subtract1");
@@ -11220,7 +11226,8 @@ var $button3 = (0, _jquery.default)("#multiply2");
 var $button4 = (0, _jquery.default)("#divide2");
 var $number = (0, _jquery.default)("#number");
 var n = localStorage.getItem("n");
-$number.text(n || 100);
+$number.text(n || 100); //绑定事件
+
 $button1.on("click", function () {
   var n = parseInt($number.text());
   n++;
@@ -11245,38 +11252,62 @@ $button4.on("click", function () {
   localStorage.setItem("n", n);
   $number.text(n);
 });
-},{"jquery":"juYr"}],"vZ5o":[function(require,module,exports) {
-"use strict";
-
-var _jquery = _interopRequireWildcard(require("jquery"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-var $tabBar = (0, _jquery.default)("#app2 .tab-bar");
-var $tabContent = (0, _jquery.default)("#app2 .tab-content");
-$tabBar.on("click", "li", function (e) {
-  var $li = (0, _jquery.default)(e.currentTarget);
-  $li.addClass("selected").siblings().removeClass("selected");
-  var index = $li.index();
-  console.log(index);
-  $tabContent.children().eq(index).addClass("active").siblings().removeClass("active");
-});
-$tabBar.children().eq(0).trigger("click");
-},{"jquery":"juYr"}],"y8lT":[function(require,module,exports) {
+},{"jquery":"juYr","./app1.css":"zQT1"}],"vZ5o":[function(require,module,exports) {
 "use strict";
 
 var _jquery = _interopRequireDefault(require("jquery"));
 
+require("./app2.css");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n <section id=\"app2\">\n        <ol class=\"tab-bar\">\n          <li>1</li>\n          <li>2</li>\n        </ol>\n        <ol class=\"tab-content\">\n          <li>\u5185\u5BB91</li>\n          <li>\u5185\u5BB92</li>\n        </ol>\n      </section>";
+var $element = (0, _jquery.default)(html).appendTo((0, _jquery.default)('.page'));
+var $tabBar = (0, _jquery.default)("#app2 .tab-bar");
+var $tabContent = (0, _jquery.default)("#app2 .tab-content");
+var localKey = 'app2.index';
+var index = localStorage.getItem(localKey) || 0;
+$tabBar.on("click", "li", function (e) {
+  var $li = (0, _jquery.default)(e.currentTarget);
+  $li.addClass("selected").siblings().removeClass("selected");
+  var index = $li.index();
+  localStorage.setItem(localKey, index);
+  console.log(index);
+  $tabContent.children().eq(index).addClass("active").siblings().removeClass("active");
+});
+$tabBar.children().eq(index).trigger("click");
+},{"jquery":"juYr","./app2.css":"zQT1"}],"y8lT":[function(require,module,exports) {
+"use strict";
+
+var _jquery = _interopRequireDefault(require("jquery"));
+
+require("./app3.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var html = "\n <section id=\"app3\">\n        <div class=\"square\"></div>\n      </section>\n";
+var $element = (0, _jquery.default)(html).appendTo((0, _jquery.default)('.page'));
 var $square = (0, _jquery.default)("#app3 .square");
 console.log($square);
+var localKey = 'app3.active';
+var active = localStorage.getItem(localKey) === 'yes'; // if(active){
+//   $square.addClass('active')
+// }else{
+//   $square.removeClass('active')
+// }
+
+$square.toggleClass('active', active);
 $square.on("click", function () {
-  $square.toggleClass("active");
+  if ($square.hasClass('active')) {
+    $square.removeClass('active');
+    localStorage.setItem('app3.active', 'no');
+  } else {
+    $square.addClass('active');
+    localStorage.setItem('app3.active', 'yes');
+  } // $square.toggleClass("active");
+
 });
-},{"jquery":"juYr"}],"eWpN":[function(require,module,exports) {
+},{"jquery":"juYr","./app3.css":"zQT1"}],"eWpN":[function(require,module,exports) {
 "use strict";
 
 var _jquery = _interopRequireDefault(require("jquery"));
@@ -11285,6 +11316,8 @@ require("./app4.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n      <section id=\"app4\"><div class=\"circle\"></div></section>\n\n";
+var $element = (0, _jquery.default)(html).appendTo((0, _jquery.default)('.page'));
 var $circle = (0, _jquery.default)("#app4 .circle");
 $circle.on("mouseenter", function () {
   $circle.addClass("active").on("mouseleave", function () {
@@ -11294,22 +11327,14 @@ $circle.on("mouseenter", function () {
 },{"jquery":"juYr","./app4.css":"zQT1"}],"epB2":[function(require,module,exports) {
 "use strict";
 
-require("./app1.css");
-
 require("./app1.js");
-
-require("./app2.css");
 
 require("./app2.js");
 
-require("./app3.css");
-
 require("./app3.js");
-
-require("./app4.css");
 
 require("./app4.js");
 
 require("./global.css");
-},{"./app1.css":"zQT1","./app1.js":"US5u","./app2.css":"zQT1","./app2.js":"vZ5o","./app3.css":"zQT1","./app3.js":"y8lT","./app4.css":"zQT1","./app4.js":"eWpN","./global.css":"zQT1"}]},{},["epB2"], null)
-//# sourceMappingURL=main.4c244b54.js.map
+},{"./app1.js":"US5u","./app2.js":"vZ5o","./app3.js":"y8lT","./app4.js":"eWpN","./global.css":"zQT1"}]},{},["epB2"], null)
+//# sourceMappingURL=main.e12b4b77.js.map
