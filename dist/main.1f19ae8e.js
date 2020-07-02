@@ -11275,7 +11275,69 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"app2.js":[function(require,module,exports) {
+},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"base/Model.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Model = /*#__PURE__*/function () {
+  function Model(options) {
+    var _this = this;
+
+    _classCallCheck(this, Model);
+
+    ['data', 'update', 'delete', 'get', 'create'].forEach(function (key) {
+      if (key in options) {
+        _this[key] = options[key];
+      }
+    });
+  }
+
+  _createClass(Model, [{
+    key: "create",
+    value: function create() {
+      var _console, _console$error;
+
+      (_console = console) === null || _console === void 0 ? void 0 : (_console$error = _console.error) === null || _console$error === void 0 ? void 0 : _console$error.call(_console, '未实现create');
+    }
+  }, {
+    key: "delete",
+    value: function _delete() {
+      var _console2, _console2$error;
+
+      (_console2 = console) === null || _console2 === void 0 ? void 0 : (_console2$error = _console2.error) === null || _console2$error === void 0 ? void 0 : _console2$error.call(_console2, '未实现delete');
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      var _console3, _console3$error;
+
+      (_console3 = console) === null || _console3 === void 0 ? void 0 : (_console3$error = _console3.error) === null || _console3$error === void 0 ? void 0 : _console3$error.call(_console3, '未实现update');
+    }
+  }, {
+    key: "get",
+    value: function get() {
+      var _console4, _console4$error;
+
+      (_console4 = console) === null || _console4 === void 0 ? void 0 : (_console4$error = _console4.error) === null || _console4$error === void 0 ? void 0 : _console4$error.call(_console4, '未实现get');
+    }
+  }]);
+
+  return Model;
+}();
+
+var _default = Model;
+exports.default = _default;
+},{}],"app2.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11287,11 +11349,13 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 require("./app2.css");
 
+var _Model = _interopRequireDefault(require("./base/Model"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var eventBus = (0, _jquery.default)({});
 var localKey = 'app2.index';
-var m = {
+var m = new _Model.default({
   data: {
     index: parseInt((JSON.parse(localStorage.getItem(localKey)) || {
       index: 1
@@ -11304,7 +11368,7 @@ var m = {
     localStorage.setItem(localKey, JSON.stringify(m.data));
     eventBus.trigger('m:updated');
   }
-};
+});
 var v = {
   container: null,
   init: function init(container) {
@@ -11353,7 +11417,7 @@ var c = {
 };
 var _default = c;
 exports.default = _default;
-},{"jquery":"../node_modules/jquery/dist/jquery.js","./app2.css":"app2.css"}],"app3.css":[function(require,module,exports) {
+},{"jquery":"../node_modules/jquery/dist/jquery.js","./app2.css":"app2.css","./base/Model":"base/Model.js"}],"app3.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -11468,7 +11532,35 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"app1.js":[function(require,module,exports) {
+},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"base/View.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault(require("jquery"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var View = function View(_ref) {
+  var container = _ref.container,
+      html = _ref.html,
+      render = _ref.render;
+
+  _classCallCheck(this, View);
+
+  this.container = (0, _jquery.default)(container);
+  this.html = html;
+  this.render = render;
+};
+
+var _default = View;
+exports.default = _default;
+},{"jquery":"../node_modules/jquery/dist/jquery.js"}],"app1.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11480,11 +11572,15 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 require("./app1.css");
 
+var _Model = _interopRequireDefault(require("./base/Model"));
+
+var _View = _interopRequireDefault(require("./base/View"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //数据相关M
 var eventBus = (0, _jquery.default)({});
-var m = {
+var m = new _Model.default({
   data: {
     n: parseInt((JSON.parse(localStorage.getItem("m.data")) || {
       n: 100
@@ -11495,24 +11591,27 @@ var m = {
     localStorage.setItem("m.data", JSON.stringify(m.data));
     eventBus.trigger('m:updated'); // localStorage.setItem("n", m.data.n);
   }
-}; //视图相关V
-
-var v = {
-  container: null,
-  init: function init(container) {
-    v.container = (0, _jquery.default)(container);
-  },
-  html: "\n        <div class=\"output\">\n          <span id=\"number\">{{n}}</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n    ",
-  render: function render(n) {
-    if (v.container.children.length !== 0) v.container.empty();
-    (0, _jquery.default)(v.html.replace('{{n}}', n)).prependTo(v.container);
-  }
-}; //其他都C
+});
+console.dir(m); //视图相关V
+//其他都C
 
 var c = {
+  v: null,
+  container: null,
+  initV: function initV() {
+    c.v = new _View.default({
+      container: c.container,
+      html: "\n            <div class=\"output\">\n              <span id=\"number\">{{n}}</span>\n              <button id=\"add1\">+1</button>\n              <button id=\"subtract1\">-1</button>\n              <button id=\"multiply2\">\u27162</button>\n              <button id=\"divide2\">\u27972</button>\n            </div>\n            ",
+      render: function render(n) {
+        if (c.v.container.children.length !== 0) c.v.container.empty();
+        (0, _jquery.default)(c.v.html.replace('{{n}}', n)).prependTo(c.v.container);
+      }
+    });
+  },
   init: function init(container) {
-    v.init(container);
-    v.render(m.data.n); // c.ui = {
+    c.container = container;
+    c.initV();
+    c.v.render(m.data.n); // c.ui = {
     //     button1: $("#add1"),
     //     button2: $("#subtract1"),
     //     button3: $("#multiply2"),
@@ -11522,7 +11621,7 @@ var c = {
 
     c.autoBindEvents();
     eventBus.on('m:updated', function () {
-      v.render(m.data.n);
+      c.v.render(m.data.n);
     });
   },
   events: {
@@ -11555,7 +11654,7 @@ var c = {
     var _loop = function _loop(key) {
       var event = key.split(' ')[0];
       var element = key.split(' ')[1];
-      v.container.on(event, element, function () {
+      c.v.container.on(event, element, function () {
         c[c.events[key]](); // m.update()
         // v.render(m.data.n)
       });
@@ -11569,7 +11668,7 @@ var c = {
 
 var _default = c;
 exports.default = _default;
-},{"jquery":"../node_modules/jquery/dist/jquery.js","./app1.css":"app1.css"}],"main.js":[function(require,module,exports) {
+},{"jquery":"../node_modules/jquery/dist/jquery.js","./app1.css":"app1.css","./base/Model":"base/Model.js","./base/View":"base/View.js"}],"main.js":[function(require,module,exports) {
 "use strict";
 
 var _app = _interopRequireDefault(require("./app2.js"));

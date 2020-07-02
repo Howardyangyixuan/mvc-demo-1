@@ -1,11 +1,12 @@
 import $ from "jquery";
 import './app2.css'
+import Model from "./base/Model";
 
 const eventBus = $({})
 const localKey = 'app2.index'
-const m = {
+const m = new Model({
     data: {
-        index: parseInt((JSON.parse(localStorage.getItem(localKey))|| {index:1})['index'])
+        index: parseInt((JSON.parse(localStorage.getItem(localKey)) || {index: 1})['index'])
     },
     update(data) {
         // console.log('hi');
@@ -14,7 +15,7 @@ const m = {
         localStorage.setItem(localKey, JSON.stringify(m.data));
         eventBus.trigger('m:updated')
     }
-}
+})
 const v = {
     container: null,
     init(container) {
