@@ -11369,30 +11369,25 @@ var m = new _Model.default({
     eventBus.trigger('m:updated');
   }
 });
-var v = {
+var view = {
   container: null,
-  init: function init(container) {
-    v.container = (0, _jquery.default)(container);
-  },
   html: function html(index) {
     return "\n        <ol class=\"tab-bar\">\n        <li class='".concat(index === 0 ? 'selected' : '', " 'data-index='0'>1</li>\n        <li class='").concat(index === 1 ? 'selected' : '', " 'data-index='1'>2</li>\n        </ol>\n        <ol class=\"tab-content\">\n        <li class='").concat(index === 0 ? 'active' : '', "'>\u5185\u5BB91</li>\n        <li class='").concat(index === 1 ? 'active' : '', "'>\u5185\u5BB92</li>\n        </ol>\n        ");
   },
-  render: function render(index) {
-    if (v.container.children.length !== 0) v.container.empty();
-    (0, _jquery.default)(v.html(index)).prependTo(v.container);
-  }
-};
-var c = {
   init: function init(container) {
-    v.init(container);
-    v.render(m.data.index);
-    c.autoBindEvents();
+    view.container = (0, _jquery.default)(container);
+    view.render(m.data.index);
+    view.autoBindEvents();
     eventBus.on('m:updated', function () {
-      v.render(m.data.index);
+      view.render(m.data.index);
     });
   },
   events: {
     'click .tab-bar li': 'x'
+  },
+  render: function render(index) {
+    if (view.container.children.length !== 0) view.container.empty();
+    (0, _jquery.default)(view.html(index)).prependTo(view.container);
   },
   x: function x(e) {
     var index = parseInt(e.currentTarget.dataset.index);
@@ -11404,18 +11399,18 @@ var c = {
     var _loop = function _loop(key) {
       var event = key.split(' ')[0];
       var element = key.split(' ')[2];
-      v.container.on(event, element, function (e) {
-        c[c.events[key]](e); // m.update()
+      view.container.on(event, element, function (e) {
+        view[view.events[key]](e); // m.update()
         // v.render(m.data.n)
       });
     };
 
-    for (var key in c.events) {
+    for (var key in view.events) {
       _loop(key);
     }
   }
 };
-var _default = c;
+var _default = view;
 exports.default = _default;
 },{"jquery":"../node_modules/jquery/dist/jquery.js","./app2.css":"app2.css","./base/Model":"base/Model.js"}],"app3.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
@@ -11593,25 +11588,15 @@ var m = new _Model.default({
   }
 });
 console.dir(m); //视图相关V
-//其他都C
 
-var c = {
-  v: null,
+var v = {}; //其他都C
+
+var view = {
   container: null,
-  initV: function initV() {
-    c.v = new _View.default({
-      container: c.container,
-      html: "\n            <div class=\"output\">\n              <span id=\"number\">{{n}}</span>\n              <button id=\"add1\">+1</button>\n              <button id=\"subtract1\">-1</button>\n              <button id=\"multiply2\">\u27162</button>\n              <button id=\"divide2\">\u27972</button>\n            </div>\n            ",
-      render: function render(n) {
-        if (c.v.container.children.length !== 0) c.v.container.empty();
-        (0, _jquery.default)(c.v.html.replace('{{n}}', n)).prependTo(c.v.container);
-      }
-    });
-  },
+  html: "\n        <div class=\"output\">\n          <span id=\"number\">{{n}}</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n    ",
   init: function init(container) {
-    c.container = container;
-    c.initV();
-    c.v.render(m.data.n); // c.ui = {
+    view.container = (0, _jquery.default)(container);
+    view.render(m.data.n); // c.ui = {
     //     button1: $("#add1"),
     //     button2: $("#subtract1"),
     //     button3: $("#multiply2"),
@@ -11619,10 +11604,14 @@ var c = {
     //     number: $("#number")
     // }
 
-    c.autoBindEvents();
+    view.autoBindEvents();
     eventBus.on('m:updated', function () {
-      c.v.render(m.data.n);
+      view.render(m.data.n);
     });
+  },
+  render: function render(n) {
+    if (view.container.children.length !== 0) view.container.empty();
+    (0, _jquery.default)(view.html.replace('{{n}}', n)).prependTo(view.container);
   },
   events: {
     'click #add1': 'add',
@@ -11654,19 +11643,19 @@ var c = {
     var _loop = function _loop(key) {
       var event = key.split(' ')[0];
       var element = key.split(' ')[1];
-      c.v.container.on(event, element, function () {
-        c[c.events[key]](); // m.update()
+      view.container.on(event, element, function () {
+        view[view.events[key]](); // m.update()
         // v.render(m.data.n)
       });
     };
 
-    for (var key in c.events) {
+    for (var key in view.events) {
       _loop(key);
     }
   }
 }; // c.init('.page')
 
-var _default = c;
+var _default = view;
 exports.default = _default;
 },{"jquery":"../node_modules/jquery/dist/jquery.js","./app1.css":"app1.css","./base/Model":"base/Model.js","./base/View":"base/View.js"}],"main.js":[function(require,module,exports) {
 "use strict";

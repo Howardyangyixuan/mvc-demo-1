@@ -16,11 +16,9 @@ const m = new Model({
         eventBus.trigger('m:updated')
     }
 })
-const v = {
+
+const view = {
     container: null,
-    init(container) {
-        v.container = $(container)
-    },
     html: (index) => {
         return `
         <ol class="tab-bar">
@@ -33,24 +31,20 @@ const v = {
         </ol>
         `
     },
-    render(index) {
-        if (v.container.children.length !== 0) v.container.empty()
-        $(v.html(index)).prependTo(v.container)
-    }
-
-}
-
-const c = {
     init(container) {
-        v.init(container)
-        v.render(m.data.index)
-        c.autoBindEvents()
+        view.container = $(container)
+        view.render(m.data.index)
+        view.autoBindEvents()
         eventBus.on('m:updated', () => {
-            v.render(m.data.index)
+            view.render(m.data.index)
         })
     },
     events: {
         'click .tab-bar li': 'x'
+    },
+    render(index) {
+        if (view.container.children.length !== 0) view.container.empty()
+        $(view.html(index)).prependTo(view.container)
     },
     x(e) {
         const index = parseInt(e.currentTarget.dataset.index)
@@ -60,11 +54,11 @@ const c = {
     }
     ,
     autoBindEvents() {
-        for (let key in c.events) {
+        for (let key in view.events) {
             const event = key.split(' ')[0]
             const element = key.split(' ')[2]
-            v.container.on(event, element, (e) => {
-                c[c.events[key]](e);
+            view.container.on(event, element, (e) => {
+                view[view.events[key]](e);
                 // m.update()
                 // v.render(m.data.n)
             })
@@ -73,4 +67,4 @@ const c = {
 
 }
 
-export default c
+export default view

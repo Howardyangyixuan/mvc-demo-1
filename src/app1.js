@@ -18,35 +18,26 @@ const m = new Model({
 })
 console.dir(m);
 //视图相关V
+const v = {
+
+}
 
 
 //其他都C
-const c = {
-    v:null,
-    container:null,
-    initV(){
-        c.v = new View({
-            container: c.container,
-            html: `
-            <div class="output">
-              <span id="number">{{n}}</span>
-              <button id="add1">+1</button>
-              <button id="subtract1">-1</button>
-              <button id="multiply2">✖2</button>
-              <button id="divide2">➗2</button>
-            </div>
-            `,
-            render(n) {
-                if (c.v.container.children.length !== 0) c.v.container.empty()
-                $(c.v.html.replace('{{n}}', n)).prependTo(c.v.container)
-
-            }
-        })
-    },
+const view = {
+    container: null,
+    html: `
+        <div class="output">
+          <span id="number">{{n}}</span>
+          <button id="add1">+1</button>
+          <button id="subtract1">-1</button>
+          <button id="multiply2">✖2</button>
+          <button id="divide2">➗2</button>
+        </div>
+    `,
     init(container) {
-        c.container = container
-        c.initV()
-        c.v.render(m.data.n)
+        view.container = $(container)
+        view.render(m.data.n)
         // c.ui = {
         //     button1: $("#add1"),
         //     button2: $("#subtract1"),
@@ -54,11 +45,15 @@ const c = {
         //     button4: $("#divide2"),
         //     number: $("#number")
         // }
-        c.autoBindEvents()
+        view.autoBindEvents()
         eventBus.on('m:updated', () => {
-            c.v.render(m.data.n)
+            view.render(m.data.n)
         })
     },
+    render(n){
+    if (view.container.children.length !== 0) view.container.empty()
+    $(view.html.replace('{{n}}', n)).prependTo(view.container)
+},
     events: {
         'click #add1': 'add',
         'click #subtract1': 'subtract',
@@ -79,11 +74,11 @@ const c = {
 
     },
     autoBindEvents() {
-        for (let key in c.events) {
+        for (let key in view.events) {
             const event = key.split(' ')[0]
             const element = key.split(' ')[1]
-                c.v.container.on(event, element, () => {
-                c[c.events[key]]();
+            view.container.on(event, element, () => {
+                view[view.events[key]]();
                 // m.update()
                 // v.render(m.data.n)
             })
@@ -93,4 +88,4 @@ const c = {
 }
 
 // c.init('.page')
-export default c
+export default view
