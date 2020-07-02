@@ -1,8 +1,10 @@
 import $ from "jquery";
 import './app2.css'
 import Model from "./base/Model";
+import View from "./base/View";
+import EventBus from "./base/EventBus";
 
-const eventBus = $({})
+const eventBus = new EventBus()
 const localKey = 'app2.index'
 const m = new Model({
     data: {
@@ -16,11 +18,13 @@ const m = new Model({
         eventBus.trigger('m:updated')
     }
 })
-
-const view = {
-    container: null,
-    html: (index) => {
-        return `
+const init = (container) => {
+    const view = new View({
+        eventBus: eventBus,
+        container: container,
+        data: m.data,
+        html: (index) => {
+            return `
         <ol class="tab-bar">
         <li class='${index === 0 ? 'selected' : ''} 'data-index='0'>1</li>
         <li class='${index === 1 ? 'selected' : ''} 'data-index='1'>2</li>
@@ -30,41 +34,23 @@ const view = {
         <li class='${index === 1 ? 'active' : ''}'>内容2</li>
         </ol>
         `
-    },
-    init(container) {
-        view.container = $(container)
-        view.render(m.data.index)
-        view.autoBindEvents()
-        eventBus.on('m:updated', () => {
-            view.render(m.data.index)
-        })
-    },
-    events: {
-        'click .tab-bar li': 'x'
-    },
-    render(index) {
-        if (view.container.children.length !== 0) view.container.empty()
-        $(view.html(index)).prependTo(view.container)
-    },
-    x(e) {
-        const index = parseInt(e.currentTarget.dataset.index)
-        m.update({index})
-        //等价于 m.update({index:index})
+        },
+        events: {
+            'click .tab-bar li': 'x'
+        },
+        render(data) {
+            const index = data.index
+            if (this.container.children.length !== 0) this.container.empty()
+            $(this.html(index)).prependTo(this.container)
+        },
+        x(e) {
+            const index = parseInt(e.currentTarget.dataset.index)
+            m.update({index})
+            //等价于 m.update({index:index})
 
-    }
-    ,
-    autoBindEvents() {
-        for (let key in view.events) {
-            const event = key.split(' ')[0]
-            const element = key.split(' ')[2]
-            view.container.on(event, element, (e) => {
-                view[view.events[key]](e);
-                // m.update()
-                // v.render(m.data.n)
-            })
         }
-    }
-
+    })
 }
 
-export default view
+
+export default init

@@ -8,10 +8,10 @@ const m = {
         active: (JSON.parse(localStorage.getItem(localKey)) || {active:'no'} )['active']
     },
     update(data) {
-        console.log(data);
+        // console.log(data);
         Object.assign(m.data, data)
-        console.log(m.data);
-        console.log(JSON.stringify(m.data));
+        // console.log(m.data);
+        // console.log(JSON.stringify(m.data));
         localStorage.setItem(localKey, JSON.stringify(m.data))
         eventBus.trigger('m:updated')
     }
@@ -27,7 +27,7 @@ const v = {
         `
     },
     render(active) {
-        console.log(active);
+        // console.log(active);
         if (v.container.children().length !== 0) v.container.empty()
         $(v.html(active)).appendTo(v.container)
     }

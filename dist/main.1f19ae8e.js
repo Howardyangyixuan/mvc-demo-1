@@ -11337,7 +11337,126 @@ var Model = /*#__PURE__*/function () {
 
 var _default = Model;
 exports.default = _default;
-},{}],"app2.js":[function(require,module,exports) {
+},{}],"base/View.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault(require("jquery"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var View = /*#__PURE__*/function () {
+  // constructor({container, html, render,data,eventBus,events})
+  function View(options) {
+    var _this = this;
+
+    _classCallCheck(this, View);
+
+    // console.log(options.data);
+    Object.assign(this, options);
+    this.container = (0, _jquery.default)(this.container); // this.html = html
+    // this.render = render
+    // this.container = $(container)
+    // this.data = data
+    // console.log(this.data);
+
+    this.render(this.data); // this.events = events
+
+    this.autoBindEvents();
+    this.eventBus.on('m:updated', function () {
+      _this.render(_this.data);
+    });
+  }
+
+  _createClass(View, [{
+    key: "autoBindEvents",
+    value: function autoBindEvents() {
+      var _this2 = this;
+
+      var _loop = function _loop(key) {
+        var index = key.indexOf(' ');
+        var event = key.substr(0, index);
+        var element = key.substr(index + 1, key.length); // console.log(event);
+        // console.log(element);
+        // const event = key.split(' ')[0]
+        // const element = key.split(' ')[1]
+
+        _this2.container.on(event, element, function (e) {
+          _this2[_this2.events[key]](e); // m.update()
+          // v.render(m.data.n)
+
+        });
+      };
+
+      for (var key in this.events) {
+        _loop(key);
+      }
+    }
+  }]);
+
+  return View;
+}();
+
+var _default = View;
+exports.default = _default;
+},{"jquery":"../node_modules/jquery/dist/jquery.js"}],"base/EventBus.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault(require("jquery"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var EventBus = /*#__PURE__*/function () {
+  function EventBus() {
+    _classCallCheck(this, EventBus);
+
+    this._eventBus = (0, _jquery.default)({});
+  }
+
+  _createClass(EventBus, [{
+    key: "on",
+    value: function on(eventName, fn) {
+      return this._eventBus.on(eventName, fn);
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(eventName, data) {
+      return this._eventBus.trigger(eventName, data);
+    }
+  }, {
+    key: "off",
+    value: function off(eventName, fn) {
+      return this._eventBus.off(eventName, fn);
+    }
+  }]);
+
+  return EventBus;
+}();
+
+var _default = EventBus;
+exports.default = _default;
+},{"jquery":"../node_modules/jquery/dist/jquery.js"}],"app2.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11351,9 +11470,13 @@ require("./app2.css");
 
 var _Model = _interopRequireDefault(require("./base/Model"));
 
+var _View = _interopRequireDefault(require("./base/View"));
+
+var _EventBus = _interopRequireDefault(require("./base/EventBus"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var eventBus = (0, _jquery.default)({});
+var eventBus = new _EventBus.default();
 var localKey = 'app2.index';
 var m = new _Model.default({
   data: {
@@ -11369,50 +11492,35 @@ var m = new _Model.default({
     eventBus.trigger('m:updated');
   }
 });
-var view = {
-  container: null,
-  html: function html(index) {
-    return "\n        <ol class=\"tab-bar\">\n        <li class='".concat(index === 0 ? 'selected' : '', " 'data-index='0'>1</li>\n        <li class='").concat(index === 1 ? 'selected' : '', " 'data-index='1'>2</li>\n        </ol>\n        <ol class=\"tab-content\">\n        <li class='").concat(index === 0 ? 'active' : '', "'>\u5185\u5BB91</li>\n        <li class='").concat(index === 1 ? 'active' : '', "'>\u5185\u5BB92</li>\n        </ol>\n        ");
-  },
-  init: function init(container) {
-    view.container = (0, _jquery.default)(container);
-    view.render(m.data.index);
-    view.autoBindEvents();
-    eventBus.on('m:updated', function () {
-      view.render(m.data.index);
-    });
-  },
-  events: {
-    'click .tab-bar li': 'x'
-  },
-  render: function render(index) {
-    if (view.container.children.length !== 0) view.container.empty();
-    (0, _jquery.default)(view.html(index)).prependTo(view.container);
-  },
-  x: function x(e) {
-    var index = parseInt(e.currentTarget.dataset.index);
-    m.update({
-      index: index
-    }); //等价于 m.update({index:index})
-  },
-  autoBindEvents: function autoBindEvents() {
-    var _loop = function _loop(key) {
-      var event = key.split(' ')[0];
-      var element = key.split(' ')[2];
-      view.container.on(event, element, function (e) {
-        view[view.events[key]](e); // m.update()
-        // v.render(m.data.n)
-      });
-    };
 
-    for (var key in view.events) {
-      _loop(key);
+var init = function init(container) {
+  var view = new _View.default({
+    eventBus: eventBus,
+    container: container,
+    data: m.data,
+    html: function html(index) {
+      return "\n        <ol class=\"tab-bar\">\n        <li class='".concat(index === 0 ? 'selected' : '', " 'data-index='0'>1</li>\n        <li class='").concat(index === 1 ? 'selected' : '', " 'data-index='1'>2</li>\n        </ol>\n        <ol class=\"tab-content\">\n        <li class='").concat(index === 0 ? 'active' : '', "'>\u5185\u5BB91</li>\n        <li class='").concat(index === 1 ? 'active' : '', "'>\u5185\u5BB92</li>\n        </ol>\n        ");
+    },
+    events: {
+      'click .tab-bar li': 'x'
+    },
+    render: function render(data) {
+      var index = data.index;
+      if (this.container.children.length !== 0) this.container.empty();
+      (0, _jquery.default)(this.html(index)).prependTo(this.container);
+    },
+    x: function x(e) {
+      var index = parseInt(e.currentTarget.dataset.index);
+      m.update({
+        index: index
+      }); //等价于 m.update({index:index})
     }
-  }
+  });
 };
-var _default = view;
+
+var _default = init;
 exports.default = _default;
-},{"jquery":"../node_modules/jquery/dist/jquery.js","./app2.css":"app2.css","./base/Model":"base/Model.js"}],"app3.css":[function(require,module,exports) {
+},{"jquery":"../node_modules/jquery/dist/jquery.js","./app2.css":"app2.css","./base/Model":"base/Model.js","./base/View":"base/View.js","./base/EventBus":"base/EventBus.js"}],"app3.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -11440,10 +11548,10 @@ var m = {
     })['active']
   },
   update: function update(data) {
-    console.log(data);
-    Object.assign(m.data, data);
-    console.log(m.data);
-    console.log(JSON.stringify(m.data));
+    // console.log(data);
+    Object.assign(m.data, data); // console.log(m.data);
+    // console.log(JSON.stringify(m.data));
+
     localStorage.setItem(localKey, JSON.stringify(m.data));
     eventBus.trigger('m:updated');
   }
@@ -11457,7 +11565,7 @@ var v = {
     return "\n        <div class=\"square ".concat(active === 'yes' ? 'active' : '', "\"></div>\n        ");
   },
   render: function render(active) {
-    console.log(active);
+    // console.log(active);
     if (v.container.children().length !== 0) v.container.empty();
     (0, _jquery.default)(v.html(active)).appendTo(v.container);
   }
@@ -11527,35 +11635,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"base/View.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault(require("jquery"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var View = function View(_ref) {
-  var container = _ref.container,
-      html = _ref.html,
-      render = _ref.render;
-
-  _classCallCheck(this, View);
-
-  this.container = (0, _jquery.default)(container);
-  this.html = html;
-  this.render = render;
-};
-
-var _default = View;
-exports.default = _default;
-},{"jquery":"../node_modules/jquery/dist/jquery.js"}],"app1.js":[function(require,module,exports) {
+},{"_css_loader":"../../../.config/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"app1.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11571,13 +11651,15 @@ var _Model = _interopRequireDefault(require("./base/Model"));
 
 var _View = _interopRequireDefault(require("./base/View"));
 
+var _EventBus = _interopRequireDefault(require("./base/EventBus"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //数据相关M
-var eventBus = (0, _jquery.default)({});
+var eventBus = new _EventBus.default();
 var m = new _Model.default({
   data: {
-    n: parseInt((JSON.parse(localStorage.getItem("m.data")) || {
+    n: parseFloat((JSON.parse(localStorage.getItem("m.data")) || {
       n: 100
     })['n'])
   },
@@ -11586,78 +11668,54 @@ var m = new _Model.default({
     localStorage.setItem("m.data", JSON.stringify(m.data));
     eventBus.trigger('m:updated'); // localStorage.setItem("n", m.data.n);
   }
-});
-console.dir(m); //视图相关V
+}); // console.dir(m);
+//视图相关V
+//其他都C
 
-var v = {}; //其他都C
-
-var view = {
-  container: null,
-  html: "\n        <div class=\"output\">\n          <span id=\"number\">{{n}}</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n    ",
-  init: function init(container) {
-    view.container = (0, _jquery.default)(container);
-    view.render(m.data.n); // c.ui = {
-    //     button1: $("#add1"),
-    //     button2: $("#subtract1"),
-    //     button3: $("#multiply2"),
-    //     button4: $("#divide2"),
-    //     number: $("#number")
-    // }
-
-    view.autoBindEvents();
-    eventBus.on('m:updated', function () {
-      view.render(m.data.n);
-    });
-  },
-  render: function render(n) {
-    if (view.container.children.length !== 0) view.container.empty();
-    (0, _jquery.default)(view.html.replace('{{n}}', n)).prependTo(view.container);
-  },
-  events: {
-    'click #add1': 'add',
-    'click #subtract1': 'subtract',
-    'click #multiply2': 'multiply',
-    'click #divide2': 'divide'
-  },
-  add: function add() {
-    m.update({
-      n: m.data.n + 1
-    });
-  },
-  subtract: function subtract() {
-    m.update({
-      n: m.data.n - 1
-    });
-  },
-  multiply: function multiply() {
-    m.update({
-      n: m.data.n * 2
-    });
-  },
-  divide: function divide() {
-    m.update({
-      n: m.data.n / 2
-    });
-  },
-  autoBindEvents: function autoBindEvents() {
-    var _loop = function _loop(key) {
-      var event = key.split(' ')[0];
-      var element = key.split(' ')[1];
-      view.container.on(event, element, function () {
-        view[view.events[key]](); // m.update()
-        // v.render(m.data.n)
+var init = function init(container) {
+  var view = new _View.default({
+    container: container,
+    data: m.data,
+    eventBus: eventBus,
+    html: "\n        <div class=\"output\">\n          <span id=\"number\">{{n}}</span>\n          <button id=\"add1\">+1</button>\n          <button id=\"subtract1\">-1</button>\n          <button id=\"multiply2\">\u27162</button>\n          <button id=\"divide2\">\u27972</button>\n        </div>\n    ",
+    render: function render(data) {
+      var n = data.n;
+      if (this.container.children.length !== 0) this.container.empty();
+      (0, _jquery.default)(this.html.replace('{{n}}', n)).prependTo(this.container);
+    },
+    events: {
+      'click #add1': 'add',
+      'click #subtract1': 'subtract',
+      'click #multiply2': 'multiply',
+      'click #divide2': 'divide'
+    },
+    add: function add() {
+      m.update({
+        n: m.data.n + 1
       });
-    };
-
-    for (var key in view.events) {
-      _loop(key);
+    },
+    subtract: function subtract() {
+      m.update({
+        n: m.data.n - 1
+      });
+    },
+    multiply: function multiply() {
+      m.update({
+        n: m.data.n * 2
+      });
+    },
+    divide: function divide() {
+      m.update({
+        n: m.data.n / 2
+      });
     }
-  }
+  });
 }; // c.init('.page')
 
-var _default = view;
+
+var _default = init;
 exports.default = _default;
-},{"jquery":"../node_modules/jquery/dist/jquery.js","./app1.css":"app1.css","./base/Model":"base/Model.js","./base/View":"base/View.js"}],"main.js":[function(require,module,exports) {
+},{"jquery":"../node_modules/jquery/dist/jquery.js","./app1.css":"app1.css","./base/Model":"base/Model.js","./base/View":"base/View.js","./base/EventBus":"base/EventBus.js"}],"main.js":[function(require,module,exports) {
 "use strict";
 
 var _app = _interopRequireDefault(require("./app2.js"));
@@ -11673,9 +11731,8 @@ var _app4 = _interopRequireDefault(require("./app1.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import "./app1.js";
-_app4.default.init('#app1');
-
-_app.default.init('#app2');
+(0, _app4.default)('#app1');
+(0, _app.default)('#app2');
 
 _app2.default.init('#app3');
 },{"./app2.js":"app2.js","./app3.js":"app3.js","./app4.js":"app4.js","./global.css":"global.css","./app1.js":"app1.js"}],"../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
